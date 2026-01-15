@@ -218,16 +218,8 @@ def logout():
 def index():
     """Main dashboard"""
     try:
-        events = db.get_all_events(limit=100) if db else []
-        recordings = list(config.RECORDINGS_DIR.glob("*.avi")) if config else []
-        snapshots = list(config.SNAPSHOTS_DIR.glob("*.jpg")) if config else []
-        
-        return render_template('index.html',
-                         system_state=system_state,
-                         events=events,
-                         recordings=recordings,
-                         snapshots=snapshots,
-                         zone_count=zone_manager.get_zone_count() if zone_manager else 0)
+        # Template uses JavaScript for all updates, no Jinja2 variables needed
+        return render_template('index.html')
     except Exception as e:
         print(f"[ERROR] Index route error: {e}")
         return f"Error loading dashboard: {e}"
