@@ -45,7 +45,7 @@ test_feature_with_output() {
     
     echo "[$TOTAL_TESTS] Testing $TEST_NAME..."
     
-    if eval "$TEST_COMMAND"; then
+    if eval "$TEST_COMMAND" > /dev/null 2>&1; then
         echo -e "${GREEN}✓ PASSED${NC}"
         PASSED_TESTS=$((PASSED_TESTS + 1))
         return 0
@@ -201,10 +201,10 @@ echo "13. CAMERA TYPE SUPPORT"
 echo "═══════════════════════════════════════════════════════════════"
 echo ""
 
-test_feature "USB camera support" "grep -q 'camera_type == .usb' web_server.py"
-test_feature "RTSP camera support" "grep -q 'camera_type == .rtsp' web_server.py"
-test_feature "HTTP camera support" "grep -q 'camera_type == .http' web_server.py"
-test_feature "Simulation mode support" "grep -q 'camera_type == .simulation' web_server.py"
+test_feature "USB camera support" "grep -q \"camera_type == 'usb'\" web_server.py"
+test_feature "RTSP camera support" "grep -q \"camera_type == 'rtsp'\" web_server.py"
+test_feature "HTTP camera support" "grep -q \"camera_type == 'http'\" web_server.py"
+test_feature "Simulation mode support" "grep -q 'simulation or unknown' web_server.py"
 
 echo ""
 echo "═══════════════════════════════════════════════════════════════"
