@@ -201,9 +201,88 @@ venv\Scripts\activate     # Windows
 pip install -r requirements.txt
 ```
 
-**Langkah 4: Instalasi Otomatis ke /opt (Opsional - Linux)**
+**🌟 METODE 1: INSTALASI DARI GITHUB (PALING MUDAH) 🌟**
 
-Untuk instalasi otomatis di `/opt/riftech-security` dengan systemd service:
+**Cara Cepat: 1 Command, 2 Menit, Langsung Jalan!**
+
+```bash
+# 1. Jalankan script instalasi (PERLU SUDO)
+sudo bash install_from_github.sh
+
+# Script akan otomatis:
+# ✓ Download dari GitHub
+# ✓ Install ke /opt/riftech-security
+# ✓ Setup virtual environment
+# ✓ Install semua dependencies
+# ✓ Setup systemd service
+# ✓ Start service langsung
+# ✓ Auto-start pada boot
+
+# Selesai dalam 2-5 menit!
+```
+
+**📦 Apa yang Akan Dilakukan Script:**
+
+1. **Download dari GitHub** - Clone repository otomatis
+2. **Install ke /opt** - Copy semua file ke direktori sistem
+3. **Setup Virtual Environment** - Buat Python venv
+4. **Install Dependencies** - Install semua Python packages
+5. **Setup Systemd Service** - Buat service untuk auto-start
+6. **Start Service** - Jalankan web server langsung
+7. **Auto-Start** - Enable service untuk boot otomatis
+
+**🎮 Setelah Instalasi Selesai:**
+
+```bash
+# Akses dashboard di browser
+http://localhost:5000
+
+# Atau gunakan IP server Anda
+http://IP_SERVER:5000
+
+# Login dengan kredensial default:
+Username: admin
+Password: riftech2025
+```
+
+**📊 Cek Status Service:**
+
+```bash
+# Cek apakah service berjalan
+sudo systemctl status riftech-security
+
+# Lihat logs real-time
+sudo journalctl -u riftech-security -f
+
+# Lihat logs di file
+sudo cat /opt/riftech-security/logs/systemd.log
+```
+
+**🎮 Kontrol Service:**
+
+```bash
+# Stop service
+sudo systemctl stop riftech-security
+
+# Start service
+sudo systemctl start riftech-security
+
+# Restart service
+sudo systemctl restart riftech-security
+```
+
+---
+
+**🔧 METODE 2: INSTALASI MANUAL (Jika script gagal)**
+
+**Langkah 1: Clone Repository**
+
+```bash
+git clone https://github.com/riftech22/riftech-security.git
+cd riftech-security
+```
+
+**Langkah 2: Instalasi Otomatis ke /opt (Linux)**
 
 ```bash
 # Jalankan script instalasi (perlu sudo)
@@ -240,6 +319,8 @@ sudo systemctl restart riftech-security
 ```bash
 sudo bash uninstall_from_opt.sh
 ```
+
+**⚙️ KONFIGURASI SISTEM (Opsional)**
 
 **Langkah 5: Konfigurasi Bot Telegram (Opsional)**
 
