@@ -14,6 +14,7 @@ COLOR_RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 REPO_URL="https://github.com/riftech22/riftech-security.git"
+REPO_NAME="riftech-security"
 INSTALL_DIR="/opt/riftech-security"
 SERVICE_NAME="riftech-security"
 
