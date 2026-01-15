@@ -115,28 +115,36 @@ class WebCameraThread(threading.Thread):
     def run(self):
         global current_frame, display_frame
         
-        for backend in [cv2.CAP_DSHOW, cv2.CAP_MSMF, cv2.CAP_ANY]:
+        # Try to open physical camera
+        for backend in [cv2.CAP_DSHOW, cv2.CAP_MSMF, cv2.CAP_V4L2, cv2.CAP_ANY]:
             try:
                 self.cap = cv2.VideoCapture(self.camera_id, backend)
                 if self.cap.isOpened():
                     ret, _ = self.cap.read()
                     if ret:
+                        print(f"[Camera] Opened camera {self.camera_id} with backend {backend}")
                         break
                     self.cap.release()
             except:
                 pass
         
         if not self.cap or not self.cap.isOpened():
-            print(f"[Camera] Cannot open camera {self.camera_id}")
-            return
-        
-        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, config.FRAME_WIDTH)
-        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, config.FRAME_HEIGHT)
-        self.cap.set(cv2.CAP_PROP_FPS, 30)
-        self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+            print(f"[Camera] No physical camera found, using simulation mode")
+            print(f"[Camera] Camera feed will show simulation message")
+            self.cap = None  # No physical camera available
+        else:
+            # Configure physical camera
+            self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, config.FRAME_WIDTH)
+            self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, config.FRAME_HEIGHT)
+            self.cap.set(cv2.CAP_PROP_FPS, 30)
+            self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
         
         self.running = True
-        print(f"[Camera] Started - Camera {self.camera_id}")
+        
+        if self.cap is not None:
+            print(f"[Camera] Started - Physical camera {self.camera_id}")
+        else:
+            print(f"[Camera] Started - Simulation mode (no physical camera)")
         
         count = 0
         start = time.time()
@@ -146,8 +154,38 @@ class WebCameraThread(threading.Thread):
                 time.sleep(0.05)
                 continue
             
-            ret, frame = self.cap.read()
-            if ret and frame is not None:
+            if self.cap is not None:
+                # Physical camera available
+                ret, frame = self.cap.read()
+                if ret and frame is not None:
+                    with frame_lock:
+                        current_frame = frame.copy()
+                    
+                    count += 1
+                    if time.time() - start >= 1.0:
+                        system_state['fps'] = count / (time.time() - start)
+                        count = 0
+                        start = time.time()
+                else:
+                    time.sleep(0.01)
+            else:
+                # No physical camera - create simulation frame
+                frame = np.zeros((config.FRAME_HEIGHT, config.FRAME_WIDTH, 3), dtype=np.uint8)
+                
+                # Create simulation message
+                cv2.putText(frame, "NO CAMERA DETECTED", 
+                          (config.FRAME_WIDTH//2 - 200, config.FRAME_HEIGHT//2 - 50), 
+                          cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 0, 255), 3)
+                cv2.putText(frame, "SIMULATION MODE", 
+                          (config.FRAME_WIDTH//2 - 160, config.FRAME_HEIGHT//2 + 10), 
+                          cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 2)
+                cv2.putText(frame, "Connect USB camera or use RTSP stream", 
+                          (config.FRAME_WIDTH//2 - 280, config.FRAME_HEIGHT//2 + 60), 
+                          cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
+                
+                # Add RIFTECH SECURITY branding
+                cv2.rectangle(frame, (0, 0), (config.FRAME_WIDTH-1, config.FRAME_HEIGHT-1), (0, 100, 200), 10)
+                
                 with frame_lock:
                     current_frame = frame.copy()
                 
@@ -156,8 +194,8 @@ class WebCameraThread(threading.Thread):
                     system_state['fps'] = count / (time.time() - start)
                     count = 0
                     start = time.time()
-            else:
-                time.sleep(0.01)
+                
+                time.sleep(0.033)  # ~30 FPS
         
         if self.cap:
             self.cap.release()
