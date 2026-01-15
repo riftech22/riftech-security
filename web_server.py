@@ -22,8 +22,17 @@ os.environ['OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS'] = '0'
 LOGIN_USERNAME = 'admin'
 LOGIN_PASSWORD = 'riftech2025'
 
-from system_config import Config, AlertType
-from data_storage import DatabaseManager
+# Initialize Flask app first
+app = Flask(__name__)
+app.secret_key = 'riftech-security-secret-key-v2'
+
+# Then import and initialize other components
+try:
+    from system_config import Config, AlertType
+    from data_storage import DatabaseManager
+except Exception as e:
+    print(f"[ERROR] Failed to import config/database: {e}")
+    sys.exit(1)
 from detection_engine import (
     PersonDetector, FaceRecognitionEngine, MotionDetector, DetectionThread,
     FACE_RECOGNITION_AVAILABLE, download_manager, PersonDetection
@@ -32,9 +41,8 @@ from comms_telemetry import TelegramBot
 from alert_audio import TTSEngine, WavAlarm
 from helper_utilities import MultiZoneManager
 
-app = Flask(__name__)
-app.secret_key = 'riftech-security-secret-key-v2'
-socketio = SocketIO(app, cors_allowed_origins="*")
+# Initialize SocketIO
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
 
 # Login decorator
 def login_required(f):
@@ -45,13 +53,17 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-# Initialize components
-config = Config()
-db = DatabaseManager(config)
-telegram = TelegramBot(config)
-tts = TTSEngine()
-alarm = WavAlarm(config)
-zone_manager = MultiZoneManager()
+# Initialize components with error handling
+try:
+    config = Config()
+    db = DatabaseManager(config)
+    telegram = TelegramBot(config)
+    tts = TTSEngine()
+    alarm = WavAlarm(config)
+    zone_manager = MultiZoneManager()
+    print("[INIT] Components initialized successfully")
+except Exception as e:
+    print(f"[ERROR] Failed to initialize components: {e}")
 
 # Detection components
 person_detector = None
