@@ -188,18 +188,22 @@ def generate_video():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """Login page"""
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
+    try:
+        if request.method == 'POST':
+            username = request.form.get('username', '')
+            password = request.form.get('password', '')
+            
+            if username == LOGIN_USERNAME and password == LOGIN_PASSWORD:
+                session['logged_in'] = True
+                session['username'] = username
+                return redirect(url_for('index'))
+            else:
+                return render_template('login.html', error=True)
         
-        if username == LOGIN_USERNAME and password == LOGIN_PASSWORD:
-            session['logged_in'] = True
-            session['username'] = username
-            return redirect(url_for('index'))
-        else:
-            return render_template('login.html', error=True)
-    
-    return render_template('login.html', error=False)
+        return render_template('login.html', error=False)
+    except Exception as e:
+        print(f"[ERROR] Login route error: {e}")
+        return render_template('login.html', error=True)
 
 
 @app.route('/logout')
@@ -213,16 +217,20 @@ def logout():
 @login_required
 def index():
     """Main dashboard"""
-    events = db.get_all_events(limit=100)
-    recordings = list(config.RECORDINGS_DIR.glob("*.avi"))
-    snapshots = list(config.SNAPSHOTS_DIR.glob("*.jpg"))
-    
-    return render_template('index.html',
-                     system_state=system_state,
-                     events=events,
-                     recordings=recordings,
-                     snapshots=snapshots,
-                     zone_count=zone_manager.get_zone_count())
+    try:
+        events = db.get_all_events(limit=100) if db else []
+        recordings = list(config.RECORDINGS_DIR.glob("*.avi")) if config else []
+        snapshots = list(config.SNAPSHOTS_DIR.glob("*.jpg")) if config else []
+        
+        return render_template('index.html',
+                         system_state=system_state,
+                         events=events,
+                         recordings=recordings,
+                         snapshots=snapshots,
+                         zone_count=zone_manager.get_zone_count() if zone_manager else 0)
+    except Exception as e:
+        print(f"[ERROR] Index route error: {e}")
+        return f"Error loading dashboard: {e}"
 
 
 @app.route('/video_feed')
@@ -262,57 +270,75 @@ def api_system():
 @app.route('/api/zone', methods=['POST'])
 def api_zone():
     """Zone management API"""
-    data = request.json
-    action = data.get('action')
-    
-    if action == 'clear':
-        zone_manager.delete_all_zones()
-    elif action == 'add_point':
-        x = data.get('x', 0)
-        y = data.get('y', 0)
-        zone = zone_manager.get_active_zone()
-        if zone:
-            zone.add_point(x, y)
-    
-    socketio.emit('zone_update', {
-        'count': zone_manager.get_zone_count(),
-        'points': len(zone_manager.get_active_zone().points) if zone_manager.get_active_zone() else 0
-    })
-    
-    return jsonify({'success': True})
+    try:
+        data = request.json
+        action = data.get('action')
+        
+        if action == 'clear' and zone_manager:
+            zone_manager.delete_all_zones()
+        elif action == 'add_point' and zone_manager:
+            x = data.get('x', 0)
+            y = data.get('y', 0)
+            zone = zone_manager.get_active_zone()
+            if zone:
+                zone.add_point(x, y)
+        
+        socketio.emit('zone_update', {
+            'count': zone_manager.get_zone_count() if zone_manager else 0,
+            'points': len(zone_manager.get_active_zone().points) if zone_manager and zone_manager.get_active_zone() else 0
+        })
+        
+        return jsonify({'success': True})
+    except Exception as e:
+        print(f"[ERROR] Zone API error: {e}")
+        return jsonify({'success': False, 'error': str(e)})
 
 
 @app.route('/api/recordings')
 def api_recordings():
     """Get recordings list"""
-    recordings = []
-    for f in config.RECORDINGS_DIR.glob("*.avi"):
-        recordings.append({
-            'name': f.name,
-            'path': str(f),
-            'size': f.stat().st_size if f.exists() else 0
-        })
-    return jsonify(recordings)
+    try:
+        recordings = []
+        if config and config.RECORDINGS_DIR.exists():
+            for f in config.RECORDINGS_DIR.glob("*.avi"):
+                recordings.append({
+                    'name': f.name,
+                    'path': str(f),
+                    'size': f.stat().st_size if f.exists() else 0
+                })
+        return jsonify(recordings)
+    except Exception as e:
+        print(f"[ERROR] Recordings API error: {e}")
+        return jsonify([])
 
 
 @app.route('/api/snapshots')
 def api_snapshots():
     """Get snapshots list"""
-    snapshots = []
-    for f in config.SNAPSHOTS_DIR.glob("*.jpg"):
-        snapshots.append({
-            'name': f.name,
-            'path': str(f)
-        })
-    return jsonify(snapshots)
+    try:
+        snapshots = []
+        if config and config.SNAPSHOTS_DIR.exists():
+            for f in config.SNAPSHOTS_DIR.glob("*.jpg"):
+                snapshots.append({
+                    'name': f.name,
+                    'path': str(f)
+                })
+        return jsonify(snapshots)
+    except Exception as e:
+        print(f"[ERROR] Snapshots API error: {e}")
+        return jsonify([])
 
 
 @app.route('/api/events')
 def api_events():
     """Get detection events"""
-    limit = request.args.get('limit', 100, type=int)
-    events = db.get_all_events(limit=limit)
-    return jsonify(events)
+    try:
+        limit = request.args.get('limit', 100, type=int)
+        events = db.get_all_events(limit=limit) if db else []
+        return jsonify(events)
+    except Exception as e:
+        print(f"[ERROR] Events API error: {e}")
+        return jsonify([])
 
 
 def toggle_arm(armed):
