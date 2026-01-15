@@ -115,29 +115,90 @@ class WebCameraThread(threading.Thread):
     def run(self):
         global current_frame, display_frame
         
-        # Try to open physical camera
-        for backend in [cv2.CAP_DSHOW, cv2.CAP_MSMF, cv2.CAP_V4L2, cv2.CAP_ANY]:
+        # Determine camera type and URL
+        camera_type = getattr(config, 'CAMERA_TYPE', 'simulation')
+        
+        if camera_type == 'usb':
+            # USB Camera
+            print(f"[Camera] Using USB camera {config.CAMERA_ID}")
+            for backend in [cv2.CAP_DSHOW, cv2.CAP_MSMF, cv2.CAP_V4L2, cv2.CAP_ANY]:
+                try:
+                    self.cap = cv2.VideoCapture(config.CAMERA_ID, backend)
+                    if self.cap.isOpened():
+                        ret, _ = self.cap.read()
+                        if ret:
+                            print(f"[Camera] Opened USB camera {config.CAMERA_ID} with backend {backend}")
+                            break
+                        self.cap.release()
+                except:
+                    pass
+            if not self.cap or not self.cap.isOpened():
+                print(f"[Camera] Failed to open USB camera {config.CAMERA_ID}")
+                self.cap = None
+        
+        elif camera_type == 'rtsp':
+            # RTSP Camera (IP Camera like V380)
+            rtsp_url = config.RTSP_URL
+            if not rtsp_url or 'camera-ip' in rtsp_url:
+                # Construct RTSP URL from V380 settings
+                rtsp_url = f"rtsp://{config.RTSP_USERNAME}:{config.RTSP_PASSWORD}@{config.RTSP_IP}:{config.RTSP_PORT}/{config.RTSP_STREAM}"
+            
+            print(f"[Camera] Using RTSP camera: {rtsp_url}")
             try:
-                self.cap = cv2.VideoCapture(self.camera_id, backend)
+                self.cap = cv2.VideoCapture(rtsp_url)
+                if self.cap.isOpened():
+                    # Set buffer size to reduce latency
+                    self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+                    # Set timeout
+                    self.cap.set(cv2.CAP_PROP_FPS, config.TARGET_FPS)
+                    ret, _ = self.cap.read()
+                    if ret:
+                        print(f"[Camera] Successfully connected to RTSP camera")
+                    else:
+                        print(f"[Camera] RTSP camera connected but cannot read frames")
+                        self.cap.release()
+                        self.cap = None
+                else:
+                    print(f"[Camera] Failed to connect to RTSP camera: {rtsp_url}")
+                    self.cap = None
+            except Exception as e:
+                print(f"[Camera] Error connecting to RTSP camera: {e}")
+                self.cap = None
+        
+        elif camera_type == 'http':
+            # HTTP Stream Camera
+            http_url = config.HTTP_URL
+            print(f"[Camera] Using HTTP stream: {http_url}")
+            try:
+                self.cap = cv2.VideoCapture(http_url)
                 if self.cap.isOpened():
                     ret, _ = self.cap.read()
                     if ret:
-                        print(f"[Camera] Opened camera {self.camera_id} with backend {backend}")
-                        break
-                    self.cap.release()
-            except:
-                pass
+                        print(f"[Camera] Successfully connected to HTTP stream")
+                    else:
+                        print(f"[Camera] HTTP stream connected but cannot read frames")
+                        self.cap.release()
+                        self.cap = None
+                else:
+                    print(f"[Camera] Failed to connect to HTTP stream: {http_url}")
+                    self.cap = None
+            except Exception as e:
+                print(f"[Camera] Error connecting to HTTP stream: {e}")
+                self.cap = None
         
-        if not self.cap or not self.cap.isOpened():
-            print(f"[Camera] No physical camera found, using simulation mode")
+        else:  # simulation or unknown
+            print(f"[Camera] Camera type: {camera_type}")
+            print(f"[Camera] Using simulation mode (no physical camera)")
             print(f"[Camera] Camera feed will show simulation message")
-            self.cap = None  # No physical camera available
-        else:
-            # Configure physical camera
-            self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, config.FRAME_WIDTH)
-            self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, config.FRAME_HEIGHT)
-            self.cap.set(cv2.CAP_PROP_FPS, 30)
-            self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+            self.cap = None
+        
+        # Configure camera if available
+        if self.cap is not None and self.cap.isOpened():
+            if camera_type == 'usb':
+                self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, config.FRAME_WIDTH)
+                self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, config.FRAME_HEIGHT)
+                self.cap.set(cv2.CAP_PROP_FPS, config.TARGET_FPS)
+                self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
         
         self.running = True
         

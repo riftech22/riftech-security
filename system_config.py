@@ -66,9 +66,47 @@ class Config:
     INTRUDER_UPDATE_INTERVAL = 6.0  # Send "still in zone" every 6 seconds
     ZONE_CLEAR_DELAY = 5.0          # Wait 5 seconds before declaring zone clear
     
+    # ========================================
+    # CAMERA CONFIGURATION
+    # ========================================
+    # Camera Type: 'usb' (USB camera), 'rtsp' (IP Camera), 'http' (HTTP stream), 'simulation' (no camera)
+    CAMERA_TYPE = 'simulation'
+    
+    # USB Camera Configuration
+    CAMERA_ID = 0  # USB camera device ID (0, 1, 2, ...)
+    
+    # RTSP Camera Configuration (IP Camera like V380)
+    # Format: rtsp://username:password@camera_ip:port/stream_path
+    # V380 Example: rtsp://admin:password123@192.168.1.100:554/stream1
+    RTSP_URL = "rtsp://username:password@camera-ip:554/stream1"
+    RTSP_USERNAME = ""
+    RTSP_PASSWORD = ""
+    RTSP_IP = ""
+    RTSP_PORT = 554
+    RTSP_STREAM = "stream1"  # stream1, stream2, live, main, sub, etc.
+    
+    # HTTP Camera Configuration
+    # Format: http://username:password@camera_ip:port/videostream.cgi
+    HTTP_URL = "http://username:password@camera-ip:port/videostream.cgi"
+    
+    # V380 Camera Specific Settings
+    V380_IP = "192.168.1.100"
+    V380_PORT = 80  # or 554 for RTSP
+    V380_USERNAME = "admin"
+    V380_PASSWORD = ""
+    V380_CHANNEL = 1  # Channel 1, 2, 3, etc.
+    V380_USE_RTSP = True  # True for RTSP, False for HTTP
+    
+    # ========================================
+    # TELEGRAM BOT CONFIGURATION
+    # ========================================
     TELEGRAM_BOT_TOKEN = "8560050150:AAH4Dzk0TfE0xezzNsdZFhta1svOLPOvs4k"
     TELEGRAM_CHAT_ID = "7456977789"
+    TELEGRAM_ENABLED = True  # Enable/disable Telegram notifications
     
+    # ========================================
+    # ALARM & TTS CONFIGURATION
+    # ========================================
     ALARM_FREQUENCY = 880
     TTS_RATE = 150
     TTS_VOLUME = 0.9
