@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RIFTECH SECURITY SYSTEM</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@socket.io/client@4/dist/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body class="cyber-body">
+    <div class="container-fluid">
+        <!-- Header -->
+        <nav class="navbar navbar-expand-lg cyber-navbar">
+            <div class="container-fluid">
+                <a class="navbar-brand cyber-title" href="/">RIFTECH SECURITY</a>
+                <div class="ms-auto">
+                    <span class="badge bg-danger" id="breach-status">SYSTEM DISARMED</span>
+                </div>
+            </div>
+        </nav>
+
+        <div class="row mt-3">
+            <!-- Left Column: Video Feed -->
+            <div class="col-lg-8">
+                <div class="card cyber-card">
+                    <div class="card-header cyber-header">
+                        <h5 class="mb-0 text-white">[LIVE CAMERA]</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="video-container">
+                            <img id="video-feed" src="/video_feed" class="video-feed">
+                            <canvas id="zone-canvas" class="zone-canvas"></canvas>
+                        </div>
+                    </div>
+                    <div class="card-footer cyber-footer">
+                        <div class="row text-white">
+                            <div class="col-4">
+                                <small class="cyber-text">ARMED:</small>
+                                <span id="armed-status" class="status-text">FALSE</span>
+                            </div>
+                            <div class="col-4">
+                                <small class="cyber-text">BREACH:</small>
+                                <span id="breach-status-text" class="status-text">NONE</span>
+                            </div>
+                            <div class="col-4">
+                                <small class="cyber-text">ALARM:</small>
+                                <span id="alarm-status" class="status-text">OFF</span>
+                            </div>
+                        </div>
+                        <div class="row text-white mt-2">
+                            <div class="col-3">
+                                <small class="cyber-text">FPS:</small>
+                                <span id="fps-display" class="cyber-value">--</span>
+                            </div>
+                            <div class="col-3">
+                                <small class="cyber-text">PERSONS:</small>
+                                <span id="persons-display" class="cyber-value">0</span>
+                            </div>
+                            <div class="col-3">
+                                <small class="cyber-text">ZONES:</small>
+                                <span id="zones-display" class="cyber-value">{{ zone_count }}</span>
+                            </div>
+                            <div class="col-3">
+                                <small class="cyber-text">ALERTS:</small>
+                                <span id="alerts-display" class="cyber-value">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Controls -->
+            <div class="col-lg-4">
+                <!-- System Controls -->
+                <div class="card cyber-card mb-3">
+                    <div class="card-header cyber-header">
+                        <h5 class="mb-0 text-white"><< SYSTEM CONTROLS >></h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <button id="arm-btn" onclick="toggleArm()" class="btn cyber-btn cyber-btn-danger">
+                                [ARM] SYSTEM
+                            </button>
+                            <button onclick="toggleRecord()" id="record-btn" class="btn cyber-btn cyber-btn-blue">
+                                [REC]
+                            </button>
+                            <button onclick="takeSnapshot()" class="btn cyber-btn cyber-btn-cyan">
+                                [SNAP]
+                            </button>
+                            <button id="mute-btn" onclick="toggleMute()" class="btn cyber-btn cyber-btn-yellow">
+                                [MUTE] ALARM
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Zone Controls -->
+                <div class="card cyber-card mb-3">
+                    <div class="card-header cyber-header">
+                        <h5 class="mb-0 text-white"><< SECURITY ZONES >></h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2 mb-2">
+                            <button onclick="newZone()" class="btn cyber-btn cyber-btn-success">
+                                [+] NEW ZONE
+                            </button>
+                            <button onclick="clearZones()" class="btn cyber-btn cyber-btn-red">
+                                [X] CLEAR ALL
+                            </button>
+                        </div>
+                        <div id="zone-info" class="mt-2 cyber-text">
+                            Active Zone Points: <span id="zone-points">0</span>
+                        </div>
+                        <div class="form-check form-switch mt-2">
+                            <input class="form-check-input" type="checkbox" id="draw-mode">
+                            <label class="form-check-label cyber-text" for="draw-mode">
+                                [*] DRAW MODE
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detection Features -->
+                <div class="card cyber-card mb-3">
+                    <div class="card-header cyber-header">
+                        <h5 class="mb-0 text-white"><< ACTIVE FEATURES >></h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="skeleton-check">
+                            <label class="form-check-label cyber-text" for="skeleton-check">
+                                [*] SKELETON TRACKING
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="face-check" checked>
+                            <label class="form-check-label cyber-text" for="face-check">
+                                [*] FACE RECOGNITION
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="motion-check" checked>
+                            <label class="form-check-label cyber-text" for="motion-check">
+                                [*] MOTION DETECTION
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="motion-breach-check" checked>
+                            <label class="form-check-label cyber-text" for="motion-breach-check">
+                                [*] MOTION TRIGGERS BREACH
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

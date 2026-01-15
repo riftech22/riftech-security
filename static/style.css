@@ -1,0 +1,326 @@
+/* RIFTECH SECURITY SYSTEM - Cyber Hacker Theme */
+
+:root {
+    --cyber-green: #00ff00;
+    --cyber-green-dark: #008800;
+    --cyber-cyan: #00ffff;
+    --cyber-red: #ff0000;
+    --cyber-yellow: #ffff00;
+    --cyber-blue: #0088ff;
+    --cyber-purple: #8800ff;
+    --cyber-black: #000000;
+    --cyber-dark: #0a0a0a;
+    --cyber-darker: #050505;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--cyber-black);
+    color: var(--cyber-green);
+    font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
+    min-height: 100vh;
+}
+
+.cyber-body {
+    background: linear-gradient(135deg, #000000 0%, #050505 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Navbar */
+.cyber-navbar {
+    background: linear-gradient(90deg, #050505 0%, #0a0a0a 100%);
+    border: 2px solid var(--cyber-green);
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+.cyber-title {
+    color: var(--cyber-green);
+    font-size: 24px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px var(--cyber-green), 0 0 20px var(--cyber-green);
+    letter-spacing: 2px;
+}
+
+/* Cards */
+.cyber-card {
+    background-color: var(--cyber-darker);
+    border: 2px solid var(--cyber-green);
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
+    margin-bottom: 20px;
+}
+
+.cyber-header {
+    background: linear-gradient(90deg, #004400 0%, #008800 100%);
+    border-bottom: 2px solid var(--cyber-green);
+    text-shadow: 0 0 5px var(--cyber-green);
+}
+
+.cyber-footer {
+    background-color: var(--cyber-darker);
+    border-top: 2px solid var(--cyber-green);
+    padding: 10px;
+}
+
+/* Buttons */
+.cyber-btn {
+    background-color: var(--cyber-black);
+    border: 2px solid var(--cyber-green);
+    color: var(--cyber-green);
+    font-family: 'Courier New', 'Consolas', monospace;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 12px 20px;
+    transition: all 0.3s;
+    text-shadow: 0 0 5px var(--cyber-green);
+}
+
+.cyber-btn:hover {
+    background-color: var(--cyber-green-dark);
+    color: var(--cyber-black);
+    text-shadow: none;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.6);
+}
+
+.cyber-btn:active {
+    background-color: var(--cyber-green);
+    color: var(--cyber-black);
+    transform: scale(0.98);
+}
+
+.cyber-btn-danger {
+    border-color: var(--cyber-red);
+    color: var(--cyber-red);
+    text-shadow: 0 0 5px var(--cyber-red);
+}
+
+.cyber-btn-danger:hover {
+    background-color: var(--cyber-red);
+    color: var(--cyber-black);
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+}
+
+.cyber-btn-danger:active {
+    background-color: #cc0000;
+}
+
+.cyber-btn-success {
+    border-color: var(--cyber-cyan);
+    color: var(--cyber-cyan);
+    text-shadow: 0 0 5px var(--cyber-cyan);
+}
+
+.cyber-btn-success:hover {
+    background-color: var(--cyber-cyan);
+    color: var(--cyber-black);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+}
+
+.cyber-btn-red {
+    border-color: var(--cyber-red);
+    color: var(--cyber-red);
+    text-shadow: 0 0 5px var(--cyber-red);
+}
+
+.cyber-btn-red:hover {
+    background-color: var(--cyber-red);
+    color: var(--cyber-black);
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+}
+
+.cyber-btn-blue {
+    border-color: var(--cyber-blue);
+    color: var(--cyber-blue);
+    text-shadow: 0 0 5px var(--cyber-blue);
+}
+
+.cyber-btn-blue:hover {
+    background-color: var(--cyber-blue);
+    color: var(--cyber-black);
+    box-shadow: 0 0 15px rgba(0, 136, 255, 0.6);
+}
+
+.cyber-btn-cyan {
+    border-color: var(--cyber-cyan);
+    color: var(--cyber-cyan);
+    text-shadow: 0 0 5px var(--cyber-cyan);
+}
+
+.cyber-btn-cyan:hover {
+    background-color: var(--cyber-cyan);
+    color: var(--cyber-black);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+}
+
+.cyber-btn-yellow {
+    border-color: var(--cyber-yellow);
+    color: var(--cyber-yellow);
+    text-shadow: 0 0 5px var(--cyber-yellow);
+}
+
+.cyber-btn-yellow:hover {
+    background-color: var(--cyber-yellow);
+    color: var(--cyber-black);
+    box-shadow: 0 0 15px rgba(255, 255, 0, 0.6);
+}
+
+/* Video Container */
+.video-container {
+    position: relative;
+    background-color: var(--cyber-black);
+    border: 2px solid var(--cyber-green);
+    padding: 5px;
+}
+
+.video-feed {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 0;
+}
+
+.zone-canvas {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    border: 2px solid var(--cyber-cyan);
+    background: rgba(0, 255, 255, 0.1);
+    pointer-events: none;
+}
+
+/* Status Text */
+.cyber-text {
+    color: var(--cyber-green);
+    font-family: 'Courier New', 'Consolas', monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.cyber-value {
+    color: var(--cyber-cyan);
+    font-family: 'Courier New', 'Consolas', monospace;
+    font-size: 14px;
+    font-weight: bold;
+    text-shadow: 0 0 5px var(--cyber-cyan);
+}
+
+.status-text {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Badges */
+.badge {
+    font-family: 'Courier New', 'Consolas', monospace;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+}
+
+.bg-danger {
+    background-color: var(--cyber-red) !important;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+}
+
+.bg-success {
+    background-color: var(--cyber-green) !important;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+/* Grid Layout */
+.d-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+}
+
+/* Form Controls */
+.form-check-input {
+    background-color: var(--cyber-black);
+    border: 2px solid var(--cyber-green);
+    cursor: pointer;
+}
+
+.form-check-input:checked {
+    background-color: var(--cyber-green);
+}
+
+.form-check-label {
+    color: var(--cyber-green);
+    font-family: 'Courier New', 'Consolas', monospace;
+    cursor: pointer;
+    user-select: none;
+}
+
+.form-check-input:hover,
+.form-check-label:hover {
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .col-lg-8 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+    
+    .col-lg-4 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+    
+    .cyber-btn {
+        font-size: 11px;
+        padding: 10px 15px;
+    }
+}
+
+/* Animations */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
+    }
+}
+
+.cyber-navbar {
+    animation: glow 2s ease-in-out infinite;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--cyber-darker);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--cyber-green);
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--cyber-cyan);
+}

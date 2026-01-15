@@ -1,0 +1,70 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+security.db
+
+# Logs
+logs/
+*.log
+
+# Recorded media
+recordings/*.avi
+recordings/*.mp4
+recordings/*.mkv
+
+# Snapshots (keep folder but ignore files)
+snapshots/*.jpg
+snapshots/*.png
+
+# Alerts (keep folder but ignore files)
+alerts/*.jpg
+alerts/*.png
+
+# Audio files (keep folder but ignore large files)
+audio/*.wav
+audio/*.mp3
+audio/*.ogg
+
+# Models (optional)
+*.pt
+*.pth
+*.onnx
+
+# System files
+.DS_Store
+Thumbs.db

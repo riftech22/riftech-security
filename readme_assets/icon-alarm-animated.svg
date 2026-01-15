@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <style>
+    .alarm-bell {
+      animation: shake 0.15s ease-in-out infinite;
+      transform-origin: 50px 20px;
+    }
+    @keyframes shake {
+      0%, 100% { transform: rotate(-5deg); }
+      25% { transform: rotate(5deg); }
+      50% { transform: rotate(-5deg); }
+      75% { transform: rotate(5deg); }
+    }
+    .alarm-light {
+      animation: glow-pulse 1s ease-in-out infinite;
+    }
+    @keyframes glow-pulse {
+      0%, 100% { fill: #00ff00; filter: drop-shadow(0 0 3px #00ff00); }
+      50% { fill: #ffff00; filter: drop-shadow(0 0 8px #ffff00); }
+    }
+    .alarm-body {
+      animation: body-pulse 2s ease-in-out infinite;
+    }
+    @keyframes body-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+  </style>
+  <rect x="20" y="40" width="60" height="40" fill="#000" stroke="#00ff00" stroke-width="3" class="alarm-body"/>
+  <line x1="50" y1="40" x2="50" y2="20" stroke="#00ff00" stroke-width="3" class="alarm-bell"/>
+  <circle cx="50" cy="15" r="5" fill="#00ff00" class="alarm-light"/>
+  <line x1="25" y1="50" x2="75" y2="50" stroke="#00ff00" stroke-width="2" class="alarm-body"/>
+  <line x1="25" y1="60" x2="75" y2="60" stroke="#00ff00" stroke-width="2" class="alarm-body"/>
+  <line x1="25" y1="70" x2="75" y2="70" stroke="#00ff00" stroke-width="2" class="alarm-body"/>
+  <text x="50" y="90" text-anchor="middle" fill="#00ff00" font-family="monospace" font-size="8">ALARM</text>
+</svg>

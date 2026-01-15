@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none" stroke="#00ff00" stroke-width="2">
+  <rect x="20" y="30" width="25" height="25" fill="#000" stroke="#00ff00" stroke-width="2"/>
+  <rect x="55" y="30" width="25" height="25" fill="#000" stroke="#00ff00" stroke-width="2"/>
+  <rect x="20" y="65" width="25" height="25" fill="#000" stroke="#00ff00" stroke-width="2"/>
+  <rect x="55" y="65" width="25" height="25" fill="#000" stroke="#00ff00" stroke-width="2"/>
+  <circle cx="32.5" cy="42.5" r="8" fill="#00ff00" opacity="0.3"/>
+  <circle cx="67.5" cy="42.5" r="8" fill="#00ff00" opacity="0.3"/>
+  <circle cx="32.5" cy="77.5" r="8" fill="#00ff00" opacity="0.3"/>
+  <circle cx="67.5" cy="77.5" r="8" fill="#00ff00" opacity="0.3"/>
+  <text x="50" y="98" text-anchor="middle" fill="#00ff00" font-family="monospace" font-size="7">YOLO</text>
+</svg>
