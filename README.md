@@ -201,7 +201,47 @@ venv\Scripts\activate     # Windows
 pip install -r requirements.txt
 ```
 
-**Langkah 4: Konfigurasi Bot Telegram**
+**Langkah 4: Instalasi Otomatis ke /opt (Opsional - Linux)**
+
+Untuk instalasi otomatis di `/opt/riftech-security` dengan systemd service:
+
+```bash
+# Jalankan script instalasi (perlu sudo)
+sudo bash install_to_opt.sh
+
+# Script akan melakukan:
+# 1. Copy project ke /opt/riftech-security
+# 2. Buat virtual environment
+# 3. Install semua dependencies
+# 4. Setup systemd service
+# 5. Enable auto-start pada boot
+```
+
+**Setelah instalasi selesai:**
+
+```bash
+# Start service
+sudo systemctl start riftech-security
+
+# Cek status
+sudo systemctl status riftech-security
+
+# View logs
+sudo journalctl -u riftech-security -f
+
+# Stop service
+sudo systemctl stop riftech-security
+
+# Restart service
+sudo systemctl restart riftech-security
+```
+
+**Uninstall:**
+```bash
+sudo bash uninstall_from_opt.sh
+```
+
+**Langkah 5: Konfigurasi Bot Telegram (Opsional)**
 
 1. Buat bot melalui [@BotFather](https://t.me/botfather) di Telegram
 2. Copy token bot Anda
